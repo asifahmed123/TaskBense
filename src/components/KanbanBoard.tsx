@@ -27,6 +27,14 @@ const KanbanBoard = () => {
           setColumns(filteredColumn)
      }
 
+     const updateColumn = (id: Id, title: string) => {
+          const newColumns = columns.map((col) => {
+               if (col.id !== id) return col;
+               return { ...col, title }
+          })
+          setColumns(newColumns)
+     }
+
 
      const columnsId = useMemo(() => columns.map(col => col.id), [columns])
 
@@ -55,7 +63,7 @@ const KanbanBoard = () => {
      }
 
      const sensors = useSensors(
-          useSensor( PointerSensor, {
+          useSensor(PointerSensor, {
                activationConstraint: {
                     distance: 3,
                }
@@ -69,7 +77,7 @@ const KanbanBoard = () => {
                          <div className="flex gap-4">
                               <SortableContext items={columnsId}>
                                    {
-                                        columns.map(col => <ColumnContainer handleDeleteColumn={handleDeleteColumn} key={col.id} col={col}></ColumnContainer>)
+                                        columns.map(col => <ColumnContainer handleDeleteColumn={handleDeleteColumn} updateColumn={updateColumn} key={col.id} col={col}></ColumnContainer>)
                                    }
                               </SortableContext>
                          </div>
@@ -78,7 +86,7 @@ const KanbanBoard = () => {
                     </div>
                     {createPortal(
                          <DragOverlay>
-                              {activeColumns && <ColumnContainer col={activeColumns} handleDeleteColumn={handleDeleteColumn}></ColumnContainer>}
+                              {activeColumns && <ColumnContainer col={activeColumns} handleDeleteColumn={handleDeleteColumn} updateColumn={updateColumn}></ColumnContainer>}
                          </DragOverlay>,
                          document.body
                     )}
